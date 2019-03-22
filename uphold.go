@@ -2,7 +2,6 @@ package uphold
 
 import (
 	"fmt"
-	"net/url"
 )
 
 // AuthorizeClientCredentials synchronously authorizes an uphold API user using the environment-configured client id and secret
@@ -10,18 +9,9 @@ func AuthorizeClientCredentials(scope string) (*string, error) {
 	var token *string
 	var err error
 
-	apiURL, err := url.Parse(upholdAPIBaseURL)
+	client, err := NewUpholdAPIClient(nil)
 	if err != nil {
-		log.Warningf("Failed to parse uphold API base url; %s", err.Error())
 		return nil, err
-	}
-
-	client := &APIClient{
-		Host:     apiURL.Host,
-		Scheme:   apiURL.Scheme,
-		Path:     "",
-		Username: stringOrNil(upholdClientID),
-		Password: stringOrNil(upholdClientSecret),
 	}
 
 	status, resp, err := client.Post("oauth2/token", map[string]interface{}{
@@ -45,18 +35,9 @@ func AuthorizeBearerToken(code string) (*AccessTokenResponse, error) {
 	var apiResponse *AccessTokenResponse
 	var err error
 
-	apiURL, err := url.Parse(upholdAPIBaseURL)
+	client, err := NewUpholdAPIClient(nil)
 	if err != nil {
-		log.Warningf("Failed to parse uphold API base url; %s", err.Error())
 		return nil, err
-	}
-
-	client := &APIClient{
-		Host:     apiURL.Host,
-		Scheme:   apiURL.Scheme,
-		Path:     "",
-		Username: stringOrNil(upholdClientID),
-		Password: stringOrNil(upholdClientSecret),
 	}
 
 	status, resp, err := client.Post("oauth2/token", map[string]interface{}{

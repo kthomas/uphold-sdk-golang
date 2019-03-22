@@ -21,6 +21,37 @@ type APIClient struct {
 	Password *string
 }
 
+// NewUpholdAPIClient initializes an APIClient using the environment-configured client id and secret
+// to construct an HTTP basic authorization header, unless a non-nil bearer access token is provided.
+func NewUpholdAPIClient(token *string) (*APIClient, error) {
+	apiURL, err := url.Parse(upholdAPIBaseURL)
+	if err != nil {
+		log.Warningf("Failed to parse uphold API base url; %s", err.Error())
+		return nil, err
+	}
+
+	var client *APIClient
+
+	if token != nil {
+		client = &APIClient{
+			Host:   apiURL.Host,
+			Scheme: apiURL.Scheme,
+			Path:   "",
+			Token:  token,
+		}
+	} else {
+		client = &APIClient{
+			Host:     apiURL.Host,
+			Scheme:   apiURL.Scheme,
+			Path:     "",
+			Username: stringOrNil(upholdClientID),
+			Password: stringOrNil(upholdClientSecret),
+		}
+	}
+
+	return client, nil
+}
+
 func (c *APIClient) sendRequest(method, urlString string, params map[string]interface{}) (status int, response interface{}, err error) {
 	client := &http.Client{
 		Transport: &http.Transport{

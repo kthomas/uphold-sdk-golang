@@ -14,7 +14,7 @@ func AuthorizeClientCredentials(scope string) (*string, error) {
 		return nil, err
 	}
 
-	status, resp, err := client.Post("oauth2/token", map[string]interface{}{
+	status, resp, err := client.PostWWWFormURLEncoded("oauth2/token", map[string]interface{}{
 		"grant_type": "client_credentials",
 	})
 	if err != nil {
@@ -40,7 +40,7 @@ func AuthorizeBearerToken(code string) (*AccessTokenResponse, error) {
 		return nil, err
 	}
 
-	status, resp, err := client.Post("oauth2/token", map[string]interface{}{
+	status, resp, err := client.PostWWWFormURLEncoded("oauth2/token", map[string]interface{}{
 		"code":       code,
 		"grant_type": "authorization_code",
 	})

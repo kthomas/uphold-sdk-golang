@@ -11,6 +11,8 @@ import (
 	"time"
 )
 
+const defaultContentType = "application/json"
+
 // APIClient is a generic base class for calling the uphold API
 type APIClient struct {
 	Host     string
@@ -52,7 +54,7 @@ func NewUpholdAPIClient(token *string) (*APIClient, error) {
 	return client, nil
 }
 
-func (c *APIClient) sendRequest(method, urlString string, params map[string]interface{}) (status int, response interface{}, err error) {
+func (c *APIClient) sendRequest(method, urlString, contentType string, params map[string]interface{}) (status int, response interface{}, err error) {
 	client := &http.Client{
 		Transport: &http.Transport{
 			DisableKeepAlives: true,
@@ -91,13 +93,27 @@ func (c *APIClient) sendRequest(method, urlString string, params map[string]inte
 	var req *http.Request
 
 	if mthd == "POST" || mthd == "PUT" {
-		payload, err := json.Marshal(params)
-		if err != nil {
-			log.Warningf("Failed to marshal JSON payload for uphold API (%s %s) invocation; %s", method, urlString, err.Error())
-			return -1, nil, err
+		var payload []byte
+		if contentType == "application/json" {
+			payload, err = json.Marshal(params)
+			if err != nil {
+				log.Warningf("Failed to marshal JSON payload for uphold API (%s %s) invocation; %s", method, urlString, err.Error())
+				return -1, nil, err
+			}
+		} else if contentType == "application/x-www-form-urlencoded" {
+			urlEncodedForm := url.Values{}
+			for key, val := range params {
+				if valStr, valOk := val.(string); valOk {
+					urlEncodedForm.Add(key, valStr)
+				} else {
+					log.Warningf("Failed to marshal application/x-www-form-urlencoded parameter: %s; value was non-string", key)
+				}
+			}
+			payload = []byte(urlEncodedForm.Encode())
 		}
+
 		req, _ = http.NewRequest(method, urlString, bytes.NewReader(payload))
-		headers["Content-Type"] = []string{"application/json"}
+		headers["Content-Type"] = []string{contentType}
 	} else {
 		req = &http.Request{
 			URL:    reqURL,
@@ -132,25 +148,31 @@ func (c *APIClient) sendRequest(method, urlString string, params map[string]inte
 // Get constructs and synchronously sends an API GET request
 func (c *APIClient) Get(uri string, params map[string]interface{}) (status int, response interface{}, err error) {
 	url := c.buildURL(uri)
-	return c.sendRequest("GET", url, params)
+	return c.sendRequest("GET", url, defaultContentType, params)
 }
 
 // Post constructs and synchronously sends an API POST request
 func (c *APIClient) Post(uri string, params map[string]interface{}) (status int, response interface{}, err error) {
 	url := c.buildURL(uri)
-	return c.sendRequest("POST", url, params)
+	return c.sendRequest("POST", url, defaultContentType, params)
+}
+
+// PostWWWFormURLEncoded constructs and synchronously sends an API POST request using
+func (c *APIClient) PostWWWFormURLEncoded(uri string, params map[string]interface{}) (status int, response interface{}, err error) {
+	url := c.buildURL(uri)
+	return c.sendRequest("POST", url, "application/x-www-form-urlencoded", params)
 }
 
 // Put constructs and synchronously sends an API PUT request
 func (c *APIClient) Put(uri string, params map[string]interface{}) (status int, response interface{}, err error) {
 	url := c.buildURL(uri)
-	return c.sendRequest("PUT", url, params)
+	return c.sendRequest("PUT", url, defaultContentType, params)
 }
 
 // Delete constructs and synchronously sends an API DELETE request
 func (c *APIClient) Delete(uri string) (status int, response interface{}, err error) {
 	url := c.buildURL(uri)
-	return c.sendRequest("DELETE", url, nil)
+	return c.sendRequest("DELETE", url, defaultContentType, nil)
 }
 
 func (c *APIClient) buildURL(uri string) string {

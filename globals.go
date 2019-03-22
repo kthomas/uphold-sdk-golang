@@ -23,7 +23,7 @@ var (
 
 func init() {
 	bootstrapOnce.Do(func() {
-		lvl := os.Getenv("LOG_LEVEL")
+		lvl := os.Getenv("UPHOLD_LOG_LEVEL")
 		if lvl == "" {
 			lvl = "INFO"
 		}

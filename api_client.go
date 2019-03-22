@@ -153,11 +153,17 @@ func (c *APIClient) Delete(uri string) (status int, response interface{}, err er
 	return c.sendRequest("DELETE", url, nil)
 }
 
+func (c *APIClient) buildURL(uri string) string {
+	path := c.Path
+	if len(path) == 1 && path == "/" {
+		path = ""
+	} else if len(path) > 1 && strings.Index(path, "/") != 0 {
+		path = fmt.Sprintf("/%s", path)
+	}
+	return fmt.Sprintf("%s://%s%s/%s", c.Scheme, c.Host, path, uri)
+}
+
 func buildBasicAuthorizationHeader(username, password string) string {
 	auth := fmt.Sprintf("%s:%s", username, password)
 	return base64.StdEncoding.EncodeToString([]byte(auth))
-}
-
-func (c *APIClient) buildURL(uri string) string {
-	return fmt.Sprintf("%s://%s/%s/%s", c.Scheme, c.Host, c.Path, uri)
 }

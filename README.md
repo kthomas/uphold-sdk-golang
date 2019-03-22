@@ -8,7 +8,7 @@ The package is not yet feature complete. A list of supported APIs will be docume
 
 `go get github.com/kthomas/uphold-sdk-golang`
 
-Ideally, you should use a package manager such as [glide](https://github.com/Masterminds/glide), in which case you can run `glide get github.com/kthomas/upgold-sdk-golang`.
+Ideally, you should use a package manager such as [glide](https://github.com/Masterminds/glide), in which case you can run `glide get github.com/kthomas/uphold-sdk-golang`.
 
 ## Supported APIs
 The following Uphold APIs are currently supported by this package:

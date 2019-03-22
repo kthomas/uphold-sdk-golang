@@ -187,5 +187,5 @@ func (c *APIClient) buildURL(uri string) string {
 
 func buildBasicAuthorizationHeader(username, password string) string {
 	auth := fmt.Sprintf("%s:%s", username, password)
-	return base64.StdEncoding.EncodeToString([]byte(auth))
+	return fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(auth)))
 }

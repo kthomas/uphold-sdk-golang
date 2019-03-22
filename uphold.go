@@ -19,7 +19,7 @@ func AuthorizeClientCredentials(scope string) (*string, error) {
 	client := &APIClient{
 		Host:     apiURL.Host,
 		Scheme:   apiURL.Scheme,
-		Path:     "/",
+		Path:     "",
 		Username: stringOrNil(upholdClientID),
 		Password: stringOrNil(upholdClientSecret),
 	}
@@ -54,7 +54,7 @@ func AuthorizeBearerToken(code string) (*AccessTokenResponse, error) {
 	client := &APIClient{
 		Host:     apiURL.Host,
 		Scheme:   apiURL.Scheme,
-		Path:     "/",
+		Path:     "",
 		Username: stringOrNil(upholdClientID),
 		Password: stringOrNil(upholdClientSecret),
 	}

@@ -9,11 +9,11 @@ import (
 
 // OAuthResponse is the API response returned when an authorization code has been successfully upgraded to an access token
 type OAuthResponse struct {
-	AccessToken  string `json:"access_token"`
-	ExpiresIn    string `json:"expires_in"`
-	TokenType    string `json:"token_type"`
-	RefreshToken string `json:"refresh_token"`
-	Scope        string `json:"scope"`
+	AccessToken  *string `json:"access_token"`
+	ExpiresIn    *string `json:"expires_in"`
+	TokenType    *string `json:"token_type"`
+	RefreshToken *string `json:"refresh_token"`
+	Scope        *string `json:"scope"`
 }
 
 // Denomination describes the value being transacted, in terms of a specific currency

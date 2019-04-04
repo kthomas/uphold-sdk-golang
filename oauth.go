@@ -79,5 +79,5 @@ func AuthorizeClientCredentials(scope string) (*string, error) {
 
 	log.Debugf("Received %d status code in response to attempted client credentials authorization request on behalf of client id: %s; response: %s", status, upholdClientID, apiResponse)
 
-	return &apiResponse.AccessToken, err
+	return apiResponse.AccessToken, err
 }

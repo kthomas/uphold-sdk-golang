@@ -99,8 +99,8 @@ type User struct {
 	ID            *string                `json:"id"`
 	Email         *string                `json:"email"`
 	Username      *string                `json:"username"`
-	FirstName     *string                `json:"first_name"`
-	LastName      *string                `json:"last_name"`
+	FirstName     *string                `json:"firstName"`
+	LastName      *string                `json:"lastName"`
 	Name          *string                `json:"name"`
 	Birthdate     *string                `json:"birthdate"`
 	Currencies    []string               `json:"currencies"`
@@ -109,7 +109,7 @@ type User struct {
 	Country       *string                `json:"country"`
 	Settings      map[string]interface{} `json:"settings"`
 	Status        *string                `json:"status"`
-	MemberAt      *string                `json:"member_at"`
+	MemberAt      *string                `json:"memberAt"`
 	Balances      map[string]interface{} `json:"balances"`
 	Verifications map[string]string      `json:"verifications"` // the transactions where the value was originated from (id and amount).
 }

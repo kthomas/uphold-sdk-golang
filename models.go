@@ -96,6 +96,7 @@ type Transaction struct {
 
 // User represents an uphold user
 type User struct {
+	ID            *string                `json:"id"`
 	Email         *string                `json:"email"`
 	Username      *string                `json:"username"`
 	FirstName     *string                `json:"first_name"`

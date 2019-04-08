@@ -111,5 +111,5 @@ type User struct {
 	Status        *string                `json:"status"`
 	MemberAt      *string                `json:"memberAt"`
 	Balances      map[string]interface{} `json:"balances"`
-	Verifications map[string]string      `json:"verifications"` // the transactions where the value was originated from (id and amount).
+	Verifications map[string]interface{} `json:"verifications"` // the transactions where the value was originated from (id and amount).
 }

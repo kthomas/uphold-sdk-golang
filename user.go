@@ -10,7 +10,7 @@ func GetUser(token string) (*User, error) {
 		return nil, err
 	}
 
-	status, err := client.Get("/", nil, &user)
+	status, err := client.Get("", nil, &user)
 	if err != nil {
 		log.Warningf("Failed to fetch user on behalf of client id: %s; %s", upholdClientID, err.Error())
 		return nil, err

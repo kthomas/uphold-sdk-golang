@@ -93,3 +93,22 @@ type Transaction struct {
 	Status       *string          `json:"status"`       // the current status of the transaction. Possible values are: pending, waiting, cancelled or completed.
 	Type         *string          `json:"type"`         // the nature of the transaction. Possible values are deposit, transfer and withdrawal.
 }
+
+// User represents an uphold user
+type User struct {
+	Email         *string                `json:"email"`
+	Username      *string                `json:"username"`
+	FirstName     *string                `json:"first_name"`
+	LastName      *string                `json:"last_name"`
+	Name          *string                `json:"name"`
+	Birthdate     *string                `json:"birthdate"`
+	Currencies    []string               `json:"currencies"`
+	Address       map[string]interface{} `json:"address"`
+	State         *string                `json:"state"`
+	Country       *string                `json:"country"`
+	Settings      map[string]interface{} `json:"settings"`
+	Status        *string                `json:"status"`
+	MemberAt      *string                `json:"member_at"`
+	Balances      map[string]interface{} `json:"balances"`
+	Verifications map[string]string      `json:"verifications"` // the transactions where the value was originated from (id and amount).
+}

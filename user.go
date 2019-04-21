@@ -1,7 +1,7 @@
 package uphold
 
 // CreateUser creates a new Uphold user
-func CreateUser(country, email, password, locale string) (*User, error) {
+func CreateUser(email, password string, country, locale, accountType *string) (*User, error) {
 	var user *User
 	var err error
 
@@ -10,10 +10,23 @@ func CreateUser(country, email, password, locale string) (*User, error) {
 		return nil, err
 	}
 
+	if country == nil {
+		country = stringOrNil("US")
+	}
+
+	if locale == nil {
+		locale = stringOrNil("en-US")
+	}
+
+	if accountType == nil {
+		accountType = stringOrNil("business")
+	}
+
 	status, err := client.Post("", map[string]interface{}{
 		"country":  country,
 		"email":    email,
 		"password": password,
+		"type":     accountType,
 		"settings": map[string]interface{}{
 			"hasMarketingConsent": false,
 		},

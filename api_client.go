@@ -61,6 +61,27 @@ func NewUpholdAPIClient(token, baseURI *string) (*APIClient, error) {
 	return client, nil
 }
 
+// NewUnauthorizedAPIClient initializes an APIClient without API credentials
+func NewUnauthorizedAPIClient(baseURI *string) (*APIClient, error) {
+	apiURL, err := url.Parse(upholdAPIBaseURL)
+	if err != nil {
+		log.Warningf("Failed to parse uphold API base url; %s", err.Error())
+		return nil, err
+	}
+
+	path := ""
+	if baseURI != nil {
+		path = *baseURI
+	}
+
+	return &APIClient{
+		Host:   apiURL.Host,
+		Scheme: apiURL.Scheme,
+		Path:   path,
+		Token:  nil,
+	}, nil
+}
+
 func (c *APIClient) sendRequest(method, urlString, contentType string, params map[string]interface{}, response interface{}) (status int, err error) {
 	client := &http.Client{
 		Transport: &http.Transport{

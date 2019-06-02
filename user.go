@@ -49,12 +49,66 @@ func CreateUser(email, password string, country, locale, accountType *string) (*
 		return nil, err
 	}
 
-	if status == 201 {
+	if status == 200 {
 		log.Debugf("Received %d status code when attempting to create uphold user; response: %s", status, user)
 		return user, nil
 	}
 
 	return nil, fmt.Errorf("Failed to create uphold user; status code: %d", status)
+}
+
+// CreateDocument upserts a document on behalf of an uphold account holder
+func CreateDocument(token, documentType string, value interface{}) error {
+	var resp map[string]interface{}
+	var err error
+
+	client, err := NewUpholdAPIClient(stringOrNil(token), stringOrNil("/v0/me"))
+	if err != nil {
+		return err
+	}
+
+	status, err := client.Post("documents", map[string]interface{}{
+		"type":  documentType,
+		"value": value,
+	}, &resp)
+	if err != nil {
+		log.Warningf("Failed to create document on behalf of uphold user; %s", err.Error())
+		return err
+	}
+
+	if status == 200 {
+		log.Warningf("Created document on behalf of uphold user; %s", err.Error())
+		return nil
+	}
+
+	return fmt.Errorf("Failed to create document on behalf of uphold user; status: %d", status)
+}
+
+// AddPhone adds a phone to an uphold account
+func AddPhone(token, countryCode, phone string) error {
+	var resp map[string]interface{}
+	var err error
+
+	client, err := NewUpholdAPIClient(stringOrNil(token), stringOrNil("/v0/me"))
+	if err != nil {
+		return err
+	}
+
+	status, err := client.Post("phones", map[string]interface{}{
+		"countryCode": countryCode,
+		"phone":       phone,
+	}, &resp)
+	if err != nil {
+		log.Warningf("Failed to create document on behalf of uphold user; %s", err.Error())
+		return err
+	}
+
+	if status == 200 {
+		log.Warningf("Created document on behalf of uphold user; %s", err.Error())
+		return nil
+	}
+
+	return fmt.Errorf("Failed to create document on behalf of uphold user; status: %d", status)
 }
 
 // GetUser fetches the user for the given bearer token

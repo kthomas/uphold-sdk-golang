@@ -1,5 +1,7 @@
 package uphold
 
+import "fmt"
+
 // CreateUser creates a new Uphold user
 func CreateUser(email, password string, country, locale, accountType *string) (*User, error) {
 	var user *User
@@ -47,9 +49,12 @@ func CreateUser(email, password string, country, locale, accountType *string) (*
 		return nil, err
 	}
 
-	log.Debugf("Received %d status code when attempting to craete uphold user: %s; response: %s", status, upholdClientID, user)
+	if status == 201 {
+		log.Debugf("Received %d status code when attempting to create uphold user; response: %s", status, user)
+		return user, nil
+	}
 
-	return user, err
+	return nil, fmt.Errorf("Failed to create uphold user; status code: %d", status)
 }
 
 // GetUser fetches the user for the given bearer token
@@ -64,11 +69,14 @@ func GetUser(token string) (*User, error) {
 
 	status, err := client.Get("", nil, &user)
 	if err != nil {
-		log.Warningf("Failed to fetch user on behalf of client id: %s; %s", upholdClientID, err.Error())
+		log.Warningf("Failed to fetch uphold user on behalf of client id: %s; %s", upholdClientID, err.Error())
 		return nil, err
 	}
 
-	log.Debugf("Received %d status code when attempting to fetch user on behalf of client id: %s; response: %s", status, upholdClientID, user)
+	if status == 200 {
+		log.Debugf("Fetched uphold user %s on behalf of client id: %s; response: %s", *user.ID, upholdClientID)
+		return user, nil
+	}
 
-	return user, err
+	return nil, fmt.Errorf("Failed to fetch uphold user; status: %d", status)
 }

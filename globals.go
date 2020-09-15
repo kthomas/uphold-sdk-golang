@@ -23,11 +23,7 @@ var (
 
 func init() {
 	bootstrapOnce.Do(func() {
-		lvl := os.Getenv("UPHOLD_LOG_LEVEL")
-		if lvl == "" {
-			lvl = "INFO"
-		}
-		log = logger.NewLogger("uphold", lvl, true)
+		log = logger.NewLogger("uphold", getLogLevel(), getSyslogEndpoint())
 
 		if os.Getenv("UPHOLD_BASE_URL") != "" {
 			upholdBaseURL = os.Getenv("UPHOLD_BASE_URL")
@@ -49,4 +45,20 @@ func init() {
 			upholdClientSecret = os.Getenv("UPHOLD_CLIENT_SECRET")
 		}
 	})
+}
+
+func getLogLevel() string {
+	lvl := os.Getenv("UPHOLD_LOG_LEVEL")
+	if lvl == "" {
+		lvl = "debug"
+	}
+	return lvl
+}
+
+func getSyslogEndpoint() *string {
+	var endpoint *string
+	if os.Getenv("SYSLOG_ENDPOINT") != "" {
+		endpoint = stringOrNil(os.Getenv("SYSLOG_ENDPOINT"))
+	}
+	return endpoint
 }
